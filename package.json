@@ -1,0 +1,16 @@
+{
+  "name": "todo-project",
+  "version": "1.0.0",
+  "description": "TOP's todo list project. The goal of which is to practice modular js.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
