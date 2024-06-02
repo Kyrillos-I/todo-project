@@ -1,22 +1,63 @@
-import createToDo from './todos.js';
 import createProject from './projects.js'
 import addToProject from './addToProject.js';
 import toggleCheck from './complete.js';
 import editTodo from './editTodo.js';
 import deleteTodo from './deleteTodo.js';
-import deleteProjects from './deleteProject.js';
+import updateDOM from './updateDOM.js';
+
+let projects;
+localStorage.clear();
+console.log('Heyy')
+if(localStorage.getItem('projects')===null){
+    console.log('No Projects Found In Local Storage');
+    projects = [];
+}
+else{
+    console.log('Projects found in local storage');
+    projects = JSON.parse(localStorage.getItem('projects'));
+}
+
+
+let inputProject = document.querySelector('.addProjects');
+let closeInputProject = document.querySelector('.closeProject');
+let popupFormProject = document.querySelector('.projectPopUp');
+
+inputProject.addEventListener('click', function() {
+    popupFormProject.showModal();
+});
+closeInputProject.addEventListener('click', function() {
+    popupFormProject.close();
+});
+popupFormProject.addEventListener('submit', function(event) {
+    event.preventDefault();
+    let pTitle = document.querySelector('#title').value;
+    let pColor = document.querySelector('#color').value;
+    let createdProject = createProject(pTitle, pColor);
+    projects.push(createdProject);
+    localStorage.setItem('projects', JSON.stringify(projects))
+    updateDOM(projects, createdProject);
+    popupFormProject.close();
+});
+
+updateDOM(projects);
+
 
 //The below code only serves to test the other modules.
-
-const projects = [];
-
+/*
 let project1 = createProject('Gym', 'red');
 let todo1 = createToDo("Get Swole", "Hit the gym and get big", "3/13", "High", false);
+let project2 = createProject('Code', 'purple');
+let todo2 = createToDo("Get Big", "Hit the gym and get big", "3/13", "Medium", false);
+let todo3 = createToDo("Get Huge", "Hit the gym and get big", "3/13", "Low", false);
 
 projects.push(project1);
 
 
 addToProject(project1, todo1);
+addToProject(project1, todo2);
+addToProject(project2, todo3);
+
+
 
 console.log(project1.title);
 console.log(todo1.title);
@@ -28,16 +69,12 @@ toggleCheck(todo1);
 console.log(todo1.checked);
 toggleCheck(todo1);
 console.log(todo1.checked);
+projects.push(project2);
+
+updateDOM(projects);
+*/
 
 
-let hey = document.querySelector('.hey');
-console.log(projects);
-hey.addEventListener('click',function(){
-    //editTodo(todo1, projects, "Learn web dev", "Get good at node.js and react", '3/13', 'High', false);
-    //deleteTodo(todo1, projects);
-    deleteProjects(project1, projects)
-    console.log(projects);
-})
 
 
 

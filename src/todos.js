@@ -1,10 +1,9 @@
-function createToDo(title, description, dueDate, priority, checked){
+function createToDo(title, description, dueDate, priority){
     return {
         title,
         description,
         dueDate,
-        priority,
-        checked
+        priority
     }
 }
 export default createToDo;
