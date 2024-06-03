@@ -1,8 +1,4 @@
 import createProject from './projects.js'
-import addToProject from './addToProject.js';
-import toggleCheck from './complete.js';
-import editTodo from './editTodo.js';
-import deleteTodo from './deleteTodo.js';
 import updateDOM from './updateDOM.js';
 
 let projects;

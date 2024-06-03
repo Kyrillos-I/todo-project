@@ -15,8 +15,7 @@ function editTodo(todo, projects, title, description, dueDate, priority, checked
         title,
         description,
         dueDate,
-        priority,
-        checked
+        priority
     }
     project.contents.splice(index,0,edited)
 }

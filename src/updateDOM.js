@@ -13,6 +13,9 @@ import projectTrash from './projectTrash.png';
 import deleteProjects from './deleteProject.js';
 import createToDo from './todos.js';
 import addToProject from './addToProject.js';
+import editTodo from './editTodo.js';
+import deleteTodo from './deleteTodo.js';
+
 
 let addProjectImg = document.querySelector('.addImage')
 addProjectImg.src = addProject;
@@ -21,6 +24,7 @@ addTodoImg.src = addTodoImage;
 
 
 function updateDOM(projects, selected){
+
     let flexProjects = document.querySelector('.projectGroups');
     flexProjects.innerHTML = '';
     let heading = document.querySelector('.p-heading');
@@ -144,6 +148,10 @@ function updateDOM(projects, selected){
                 deleteTrash.alt = 'delete';
                 deleteTrash.classList.add('delete');
                 deleteTrash.src = trash;
+                deleteTrash.addEventListener('click', function(){
+                    deleteTodo(projects[i].contents[j], projects);
+                    updateDOM(projects, selected);
+                })
                 footer.appendChild(editPen);
                 footer.appendChild(priority);
                 footer.appendChild(deleteTrash);
@@ -151,50 +159,9 @@ function updateDOM(projects, selected){
         }
     }
     else{
-            let addTodoButton = document.querySelector('.addTodo');
-            let todoPopUp = document.querySelector('.todoPopUp');
-            let closeTodo = document.querySelector('.closeTodo');
-            let selected2;
-        
-            addTodoButton.addEventListener('click', function() {
-                todoPopUp.showModal();
-            });
-        
-            closeTodo.addEventListener('click', function() {
-                todoPopUp.close();
-            });
-        
-            const handleSubmit = function(selected1, event) {
-                event.preventDefault();
-                console.log('Well this ran!');
-                let todo = createToDo(
-                    document.querySelector('#todo-title').value,
-                    document.querySelector('#description').value,
-                    document.querySelector('#dueDate').value,
-                    document.querySelector('#priority').value
-                );
-                addToProject(selected1, todo);
-                console.log(selected1.title);
-                localStorage.setItem('projects', JSON.stringify(projects));
-                updateDOM(projects, selected1);
-                todoPopUp.close();
-            };
-            
-            const addSubmitListener = function(selected) {
-                const submitHandler = (event) => handleSubmit(selected, event);
-            
-                // Remove all existing event listeners
-                for (let i = 0; i < projects.length; i++) {
-                    let project = projects[i];
-                    todoPopUp.removeEventListener('submit', submitHandler);
-                }
-            
-                // Add the new event listener
-                todoPopUp.addEventListener('submit', submitHandler);
-            };
-            addSubmitListener(selected);
 
-        
+        todoPopUp.selectedProject = selected;
+
 
         let storeName = "."+selected.title;
         let currentlySelected = document.querySelector(storeName);
@@ -258,6 +225,11 @@ function updateDOM(projects, selected){
             editPen.alt = 'edit';
             editPen.classList.add('edit');
             editPen.src = pen;
+            editPen.addEventListener('click', function(){
+                todoPopUp.editItem = selected.contents[j];
+                todoPopUp.edit =true;
+                todoPopUp.showModal();
+            })
             let priority = document.createElement('div');
             priority.classList.add('priority');
             let level = selected.contents[j].priority;
@@ -267,12 +239,47 @@ function updateDOM(projects, selected){
             deleteTrash.alt = 'delete';
             deleteTrash.classList.add('delete');
             deleteTrash.src = trash;
+            deleteTrash.addEventListener('click', function(){
+                deleteTodo(selected.contents[j], projects);
+                updateDOM(projects, selected);
+            })
             footer.appendChild(editPen);
             footer.appendChild(priority);
             footer.appendChild(deleteTrash);
         }
+        todoPopUp.removeEventListener('submit', (event)=> handleSubmit(todoPopUp.selectedProject, event));
     }
    localStorage.setItem('projects', JSON.stringify(projects));
+   todoPopUp.projects = projects;
 }
+
+let addTodoButton = document.querySelector('.addTodo');
+let todoPopUp = document.querySelector('.todoPopUp');
+let closeTodo = document.querySelector('.closeTodo');
+
+addTodoButton.addEventListener('click', function() {
+    todoPopUp.showModal();
+});
+
+closeTodo.addEventListener('click', function() {
+    todoPopUp.close();
+});
+
+const handleSubmit = function(selected1, event) {
+    event.preventDefault();
+    console.log('Well this ran!');
+    let todo = createToDo(
+        document.querySelector('#todo-title').value,
+        document.querySelector('#description').value,
+        document.querySelector('#dueDate').value,
+        document.querySelector('#priority').value
+    );
+    addToProject(selected1, todo);
+    todoPopUp.close();
+    updateDOM(todoPopUp.projects, selected1);
+    
+};
+
+todoPopUp.addEventListener('submit', (event)=> handleSubmit(todoPopUp.selectedProject, event));
 
 export default updateDOM;

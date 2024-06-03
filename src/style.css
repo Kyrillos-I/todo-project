@@ -148,13 +148,13 @@ body{
     display: flex;
     align-items: center;
 }
-.High{
+.high{
     background-color: rgba(250, 82, 82, 1);
 }
-.Medium{
+.medium{
     background-color: rgb(229, 248, 84);
 }
-.Low{
+.low{
     background-color: rgb(16, 251, 51);
 }
 
