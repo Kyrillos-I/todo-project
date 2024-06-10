@@ -1,8 +1,8 @@
-function editTodo(todo, projects, title, description, dueDate, priority, checked){
+function editTodo(todo, projects, title, description, dueDate, priority){
     let project = null;
     for(let i = 0; i<projects.length; i++){
         for(let j=0; j<projects[i].contents.length; j++){
-            if(projects[i].contents[j] == todo){
+            if(projects[i].contents[j] === todo){
                 project = projects[i];
                 break;
             }
@@ -18,6 +18,7 @@ function editTodo(todo, projects, title, description, dueDate, priority, checked
         priority
     }
     project.contents.splice(index,0,edited)
+    console.log(projects);
 }
 
 export default editTodo;

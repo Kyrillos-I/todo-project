@@ -16,6 +16,8 @@ import addToProject from './addToProject.js';
 import editTodo from './editTodo.js';
 import deleteTodo from './deleteTodo.js';
 
+import { format, formatDistance, parse } from 'date-fns';
+
 
 let addProjectImg = document.querySelector('.addImage')
 addProjectImg.src = addProject;
@@ -36,7 +38,7 @@ function updateDOM(projects, selected){
         let project = document.createElement('div');
         project.classList.add('group');
         project.classList.add(projects[i].color);
-        project.classList.add(projects[i].title);
+        project.classList.add(projects[i].title.replace(/\s/g, ''));
         flexProjects.appendChild(project);
 
         let folder = document.createElement('img');
@@ -71,6 +73,7 @@ function updateDOM(projects, selected){
     itemList.innerHTML = '';
 
     if(selected===undefined){
+        todoPopUp.inASelectedProject = false;
         /*
         let addTodoButton = document.querySelector('.addTodo');
         let todoPopUp = document.querySelector('.todoPopUp');
@@ -124,7 +127,14 @@ function updateDOM(projects, selected){
                 
                 let date = document.createElement('div');
                 date.classList.add('date')
-                date.innerText = projects[i].contents[j].dueDate;
+                
+                const dateFormat = 'yyyy-MM-dd';
+                const parsedDate = parse(projects[i].contents[j].dueDate, dateFormat, new Date());
+                let today = new Date();
+                let distance = formatDistance(parsedDate, today, { addSuffix: true });
+                let formatedDate = format(parsedDate, 'MM/dd/yy')
+
+                date.innerText = formatedDate +" - Due "+distance;
                 item.appendChild(date);
 
                 let description = document.createElement('description');
@@ -139,6 +149,11 @@ function updateDOM(projects, selected){
                 editPen.alt = 'edit';
                 editPen.classList.add('edit');
                 editPen.src = pen;
+                editPen.addEventListener('click', function(){
+                    todoPopUp.editItem = projects[i].contents[j];
+                    todoPopUp.edit =true;
+                    todoPopUp.showModal();
+                })
                 let priority = document.createElement('div');
                 priority.classList.add('priority');
                 let level = projects[i].contents[j].priority;
@@ -159,11 +174,11 @@ function updateDOM(projects, selected){
         }
     }
     else{
-
+        todoPopUp.inASelectedProject = true;
         todoPopUp.selectedProject = selected;
 
 
-        let storeName = "."+selected.title;
+        let storeName = "."+selected.title.replace(/\s/g, '');
         let currentlySelected = document.querySelector(storeName);
         let removeSelected = document.createElement('img');
         removeSelected.alt = 'Delete Selected Project';
@@ -210,7 +225,14 @@ function updateDOM(projects, selected){
             
             let date = document.createElement('div');
             date.classList.add('date')
-            date.innerText = selected.contents[j].dueDate;
+
+            const dateFormat = 'yyyy-MM-dd';
+            const parsedDate = parse(selected.contents[j].dueDate, dateFormat, new Date());
+            let today = new Date();
+            let distance = formatDistance(parsedDate, today, { addSuffix: true });
+            let formatedDate = format(parsedDate, 'MM/dd/yy')
+
+            date.innerText = formatedDate +" - Due "+distance;
             item.appendChild(date);
 
             let description = document.createElement('description');
@@ -258,7 +280,12 @@ let todoPopUp = document.querySelector('.todoPopUp');
 let closeTodo = document.querySelector('.closeTodo');
 
 addTodoButton.addEventListener('click', function() {
-    todoPopUp.showModal();
+    if(todoPopUp.inASelectedProject === false){
+        alert('Please create or enter a project to add a todo!')
+    }
+    else{
+        todoPopUp.showModal();
+    }
 });
 
 closeTodo.addEventListener('click', function() {
@@ -267,16 +294,31 @@ closeTodo.addEventListener('click', function() {
 
 const handleSubmit = function(selected1, event) {
     event.preventDefault();
-    console.log('Well this ran!');
-    let todo = createToDo(
-        document.querySelector('#todo-title').value,
-        document.querySelector('#description').value,
-        document.querySelector('#dueDate').value,
-        document.querySelector('#priority').value
-    );
-    addToProject(selected1, todo);
-    todoPopUp.close();
-    updateDOM(todoPopUp.projects, selected1);
+    if(todoPopUp.edit === true){
+        editTodo(
+            todoPopUp.editItem,
+            todoPopUp.projects,
+            document.querySelector('#todo-title').value,
+            document.querySelector('#description').value,
+            document.querySelector('#dueDate').value,
+            document.querySelector('#priority').value
+        )
+        todoPopUp.close();
+        updateDOM(todoPopUp.projects, selected1);
+        todoPopUp.edit = false;
+    }
+    else{
+        console.log('Well this ran!');
+        let todo = createToDo(
+            document.querySelector('#todo-title').value,
+            document.querySelector('#description').value,
+            document.querySelector('#dueDate').value,
+            document.querySelector('#priority').value
+        );
+        addToProject(selected1, todo);
+        todoPopUp.close();
+        updateDOM(todoPopUp.projects, selected1);
+    }
     
 };
 

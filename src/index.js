@@ -2,7 +2,7 @@ import createProject from './projects.js'
 import updateDOM from './updateDOM.js';
 
 let projects;
-localStorage.clear();
+//localStorage.clear();
 console.log('Heyy')
 if(localStorage.getItem('projects')===null){
     console.log('No Projects Found In Local Storage');
@@ -23,6 +23,7 @@ inputProject.addEventListener('click', function() {
 });
 closeInputProject.addEventListener('click', function() {
     popupFormProject.close();
+    console.log('Closed!');
 });
 popupFormProject.addEventListener('submit', function(event) {
     event.preventDefault();
